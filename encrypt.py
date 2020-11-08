@@ -23,7 +23,7 @@ class main:
 		if userinput["isTrue"]:
 			self.input_ = userinput["pw"]
 		else:
-			self.input_ = input('Enter Key: ')
+			self.input_ = str(Fernet.generate_key())[2:-1]
 
 
 		self.password = sha512(self.input_.encode('utf-8')).hexdigest()
@@ -89,13 +89,14 @@ def generate(ie):
 		print(str(Fernet.generate_key())[2:-1])
 		i+=1
 
-if __name__ == "__main__": 
-	from sys import argv
-
-	if len(argv) >= 2:
-		if argv[1] == "generate":
-			generate(10)
-		elif argv[1] == "help":
+def commands(arg):
+	if len(arg) >= 2:
+		if arg[1] == "generate":
+			if len(arg) >= 3:
+				generate(int(arg[2]))
+			else:
+				generate(10)
+		elif arg[1] == "help":
 			msg = (
 				'encrypt: encrypt a file.\n'
 				'	{x} encrypt {s}$file_name{e}\n'
@@ -112,14 +113,26 @@ if __name__ == "__main__":
 				'help:\n'
 				'	{x} help{e}').format(x="encrypt.py"+bcolors.OKGREEN, s=bcolors.WARNING, e=bcolors.ENDC)
 			print(msg)
-		elif argv[1] == "encrypt" or argv[1] == "decrypt":
-			if len(argv) >= 4:
-				file = main({"isTrue":True,"pw":argv[3]}, argv[2])
-			elif len(argv) == 3:
-				file = main({"isTrue":False}, argv[2])
+		elif arg[1] == "encrypt" or arg[1] == "decrypt":
+			if len(arg) >= 4:
+				file = main({"isTrue":True,"pw":arg[3]}, arg[2])
+			elif len(arg) == 3:
+				file = main({"isTrue":False}, arg[2])
 
 
-			if argv[1] == "encrypt":
+			if arg[1] == "encrypt":
 				file.encrypt()
-			if argv[1] == "decrypt":
+			if arg[1] == "decrypt":
 				file.decrypt()
+
+if __name__ == "__main__":
+	commands(["nothing", "help"])
+
+	from sys import argv
+	commands(argv)
+
+
+	while True:
+		input_ = "nothing "
+		input_ += input("Enter command:")
+		commands(input_.split())
