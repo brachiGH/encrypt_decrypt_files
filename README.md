@@ -16,10 +16,6 @@
 
 
 # generate: generate keys.
-
-        encrypt.py generate
-        
-        OR
         
         encrypt.py generate $nb_of_keys
 

@@ -2,21 +2,6 @@ from cryptography.fernet import Fernet
 from hashlib import sha512
 from binascii import hexlify, unhexlify
 
-class bcolors:
-	HEADER = '\033[95m'
-	OKBLUE = '\033[94m'
-	OKGREEN = '\033[92m'
-	WARNING = '\033[93m'
-	FAIL = '\033[91m'
-	ENDC = '\033[0m'
-
-	def disable(self):
-		self.HEADER = ''
-		self.OKBLUE = ''
-		self.OKGREEN = ''
-		self.WARNING = ''
-		self.FAIL = ''
-		self.ENDC = ''
 
 class main:
 	def __init__(self, userinput, file):
@@ -33,7 +18,7 @@ class main:
 			key = bytes(self.input_, 'utf-8')
 			self.cipher_suite = Fernet(key)
 		except:
-			print(bcolors.FAIL+"INVALID KEY"+bcolors.ENDC)
+			print("INVALID KEY")
 
 		self.file = file
 
@@ -48,7 +33,7 @@ class main:
 
 
 			with open(self.file+".crypt", 'w') as f:
-				f.write(self.password+"\n"+self.file[:self.file.rfind(".")]+"\n."+self.file[self.file.rfind(".")+1:]+"\n")
+				f.write(self.password+"\n"+self.file[self.file.rfind(".")+1:]+"\n")
 
 			with open(self.file+".crypt", 'ab') as f:
 				f.write(cipher_text)
@@ -56,9 +41,9 @@ class main:
 			with open(self.file+".key.txt", 'w') as f:
 				f.write(self.input_)
 
-			print(bcolors.OKGREEN+"DONE"+bcolors.ENDC)
+			print("DONE")
 		except:
-			print(bcolors.FAIL+"FAILED"+bcolors.ENDC)
+			print("FAILED")
 
 	def decrypt(self):
 		try:
@@ -70,17 +55,16 @@ class main:
 					self.content = f.readlines()
 
 			if self.password == str(self.content[0])[2:-5]:
-				print(bcolors.OKGREEN+"DONE"+bcolors.ENDC)
-				decrypt = self.cipher_suite.decrypt(self.content[3])
+				print("DONE")
+				decrypt = self.cipher_suite.decrypt(self.content[2])
 
-				f = open(str(self.content[1])[2:-5]+"_out"+str(self.content[2])[2:-5], "wb")
+				f = open("_out."+str(self.content[1])[2:-5], "wb")
 				f.write(unhexlify(decrypt))
 				f.close()
 			else:
-				print(bcolors.FAIL+"FAILED"+bcolors.ENDC)
-
-		except:
-			print(bcolors.FAIL+"FAILED"+bcolors.ENDC)
+				print("FAILED")
+		except NameError:
+			print("FAILED", NameError)
 
 
 def generate(ie):
@@ -99,19 +83,17 @@ def commands(arg):
 		elif arg[1] == "help":
 			msg = (
 				'encrypt: encrypt a file.\n'
-				'	{x} encrypt {s}$file_name{e}\n'
+				'	{x} encrypt $file_name\n'
 				'	OR\n'
-				'	{x} encrypt {s}$file_name $key{e}\n\n'
+				'	{x} encrypt $file_name $key\n\n'
 				'decrypt: decrypt a file.\n'
-				'	{x} decrypt {s}$file_name{e}\n'
-				'	OR\n'
-				'	{x} decrypt {s}$file_name $key{e}\n\n'
+				'	{x} decrypt $file_name $key\n\n'
 				'generate: generate keys.\n'
-				'	{x} generate{e}\n'
+				'	{x} generate\n'
 				'	OR\n'
-				'	{x} generate {s}$nb_of_keys{e}\n\n'
+				'	{x} generate $nb_of_keys\n\n'
 				'help:\n'
-				'	{x} help{e}').format(x="encrypt.py"+bcolors.OKGREEN, s=bcolors.WARNING, e=bcolors.ENDC)
+				'	{x} help').format(x="encrypt.py")
 			print(msg)
 		elif arg[1] == "encrypt" or arg[1] == "decrypt":
 			if len(arg) >= 4:
@@ -133,6 +115,7 @@ if __name__ == "__main__":
 
 
 	while True:
-		input_ = "nothing "
+		input_ = "encrypt.py "
 		input_ += input("Enter command:")
+		print(input_)
 		commands(input_.split())
