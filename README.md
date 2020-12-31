@@ -8,14 +8,14 @@
 
 # decrypt: decrypt a file.
                   
-        encrypt.py decrypt $file_name
-                  
-        OR
-                  
         encrypt.py decrypt $file_name $key
 
 
 # generate: generate keys.
+
+        encrypt.py generate
+        
+        OR
         
         encrypt.py generate $nb_of_keys
 
